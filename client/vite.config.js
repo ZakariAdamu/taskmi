@@ -6,5 +6,8 @@ export default defineConfig({
 	plugins: [react()],
 	server: {
 		port: 3006,
+		proxy: {
+			"/api": "htt://react-jobs-ruddy.vercel.app",
+		},
 	},
 });

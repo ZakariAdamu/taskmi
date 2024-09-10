@@ -68,7 +68,7 @@ const Register = () => {
 								className="form-control"
 								id="confirmPassword"
 								name="confirmPassword"
-								value={confirmPassword}
+                                value={confirmPassword}
 								placeholder="Confirm your password"
 								onChange={onChange}
 							/>
