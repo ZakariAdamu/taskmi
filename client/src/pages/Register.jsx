@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { FaUser } from "react-icons/fa";
+import { register, reset } from "../features/auth/authSlice";
 const Register = () => {
 	const [formData, setFormData] = useState({
 		name: "",
@@ -11,6 +15,27 @@ const Register = () => {
 	// Array destructuring
 	const { name, email, password, confirmPassword } = formData;
 
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	// Select items from our global state: i.e state.auth
+	const { user, isLoading, isError, isSuccess, message } = useSelector(
+		(state) => state.auth
+	);
+
+	useEffect(() => {
+		if (isError) {
+			toast.error(message);
+		}
+
+		// check if user successfully registers, then navigate user to user dashboard
+		if (isSuccess || user) {
+			navigate("/");
+		}
+		dispatch(reset());
+		// localStorage.clear();
+	}, [user, isError, isSuccess, message, navigate, dispatch]);
+
 	const onChange = (e) => {
 		setFormData((prevState) => ({
 			...prevState,
@@ -19,6 +44,22 @@ const Register = () => {
 	};
 	const onSubmit = (e) => {
 		e.preventDefault();
+
+		if (password !== confirmPassword) {
+			toast.error("Passwords do not match");
+		} else {
+			const userData = {
+				name,
+				email,
+				password,
+			};
+
+			dispatch(register(userData));
+		}
+
+		if (isLoading) {
+			return <p>Loading...</p>;
+		}
 	};
 	return (
 		<>
@@ -68,7 +109,7 @@ const Register = () => {
 								className="form-control"
 								id="confirmPassword"
 								name="confirmPassword"
-                                value={confirmPassword}
+								value={confirmPassword}
 								placeholder="Confirm your password"
 								onChange={onChange}
 							/>

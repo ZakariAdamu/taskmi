@@ -7,7 +7,7 @@ export default defineConfig({
 	server: {
 		port: 3006,
 		proxy: {
-			"/api": "htt://react-jobs-ruddy.vercel.app",
+			"/api": "http://localhost:5006",
 		},
 	},
 });
