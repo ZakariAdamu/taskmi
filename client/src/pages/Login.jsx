@@ -1,14 +1,39 @@
 import { useState, useEffect } from "react";
 import { FaSignInAlt } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { login, reset } from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
 const Login = () => {
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
-		
 	});
 
 	// Array destructuring
 	const { email, password } = formData;
+
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	// Select items from our global state: i.e state.auth
+	const { user, isLoading, isError, isSuccess, message } = useSelector(
+		(state) => state.auth
+	);
+
+	useEffect(() => {
+		if (isError) {
+			toast.error(message);
+		}
+
+		// check if user successfully registers, then navigate user to user dashboard
+		if (isSuccess || user) {
+			navigate("/");
+		}
+		dispatch(reset());
+		// localStorage.clear();
+	}, [user, isError, isSuccess, message, navigate, dispatch]);
 
 	const onChange = (e) => {
 		setFormData((prevState) => ({
@@ -18,7 +43,18 @@ const Login = () => {
 	};
 	const onSubmit = (e) => {
 		e.preventDefault();
+
+		const userData = {
+			email,
+			password,
+		};
+		dispatch(login(userData));
 	};
+
+	if (isLoading) {
+		return <Spinner />;
+	}
+
 	return (
 		<>
 			<section className="heading">
@@ -29,7 +65,6 @@ const Login = () => {
 			</section>
 			<section className="form">
 				<form onSubmit={onSubmit}>
-					
 					<div className="form-group">
 						<input
 							type="email"
@@ -51,7 +86,7 @@ const Login = () => {
 							placeholder="Enter your password"
 							onChange={onChange}
 						/>
-					
+
 						<div className="form-group">
 							<button
 								type="submit"

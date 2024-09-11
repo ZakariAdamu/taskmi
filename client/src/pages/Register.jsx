@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
 import { FaUser } from "react-icons/fa";
 import { register, reset } from "../features/auth/authSlice";
 const Register = () => {
@@ -58,9 +59,10 @@ const Register = () => {
 		}
 
 		if (isLoading) {
-			return <p>Loading...</p>;
+			return <Spinner />;
 		}
 	};
+
 	return (
 		<>
 			<section className="heading">
