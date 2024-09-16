@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const colors = require("colors");
@@ -18,6 +19,16 @@ app.use(express.urlencoded({ extended: false }));
 // Routes setup
 app.use("/api/tasks", tasksRoute);
 app.use("/api/users", userRoute);
+
+
+// Serve client
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "../client/dist/")));
+
+	app.get("*", (req, res) =>
+		res.sendFile(path.resolve(__dirname, "../", "client", "dist", "index.html"))
+	);
+}
 
 // Home route for initial testing
 app.get("/", (req, res) => {
